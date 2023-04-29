@@ -11,14 +11,12 @@ jobs:
     name: Package
     strategy:
       matrix:
+        os: [ windows, ubuntu ]
+        target-arch: [ x86_64 ]
+        python-version: [ '3.11', 'pypy3.9' ]
         include:
           - os: macos
-            PYINSTALLER_ADDITIONAL_ARGS: --target-arch universal2
-            ARCH_SUFFIX: universal
-          - os: windows
-            ARCH_SUFFIX: x86_64
-          - os: ubuntu
-            ARCH_SUFFIX: x86_64
+            target-arch: universal2
     runs-on: ${{ matrix.os }}-latest
     steps:
       - name: Checkout
@@ -26,16 +24,16 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v3
         with:
-          python-version: '3.11'
+          python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: pip install pyinstaller
       - name: Package
         run: >
           pyinstaller --distpath ./bin -F -n ${{ env.BINARY_NAME }}
-          ${{ matrix.PYINSTALLER_ADDITIONAL_ARGS }}
+          --target-arch ${{ matrix.target-arch }}
           ${{ env.ENTRANCE_SCRIPT }}
       - name: Upload Binary
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.BINARY_NAME }}-${{ runner.os }}-${{ matrix.ARCH_SUFFIX }}
+          name: ${{ env.BINARY_NAME }}-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.target-arch }}
           path: bin/${{ env.BINARY_NAME }}*

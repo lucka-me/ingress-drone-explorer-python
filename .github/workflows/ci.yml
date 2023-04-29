@@ -23,10 +23,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        run: ${{ steps.setup-python.outputs.python-path }} -m pip install pyinstaller
+        run: ${{ steps.setup-python.outputs.python-path }} -m pip install PyInstaller
       - name: Package
         run: >
-          ${{ steps.setup-python.outputs.python-path }} -m pyinstaller
+          ${{ steps.setup-python.outputs.python-path }} -m PyInstaller
           --distpath ./bin -F -n ${{ env.BINARY_NAME }} ${{ env.ENTRANCE_SCRIPT }}
       - name: Upload Binary
         uses: actions/upload-artifact@v3
@@ -49,10 +49,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        run: ${{ steps.setup-python.outputs.python-path }} -m pip install pyinstaller
+        run: ${{ steps.setup-python.outputs.python-path }} -m pip install PyInstaller
       - name: Package
         run: >
-          ${{ steps.setup-python.outputs.python-path }} -m pyinstaller
+          ${{ steps.setup-python.outputs.python-path }} -m PyInstaller
           --distpath ./bin -F -n ${{ env.BINARY_NAME }} --target-arch universal2
           ${{ env.ENTRANCE_SCRIPT }}
       - name: Upload Binary

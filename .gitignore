@@ -1,0 +1,11 @@
+__pycache__
+/bin
+/build
+/*.spec
+
+# IDE
+.devcontainer
+.vscode
+
+# Filesystem
+.DS_Store

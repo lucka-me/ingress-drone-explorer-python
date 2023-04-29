@@ -18,13 +18,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup Python
+        id: setup-python
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        run: pip install pyinstaller
+        run: ${{ steps.setup-python.outputs.python-path }} -m pip install pyinstaller
       - name: Package
-        run: pyinstaller --distpath ./bin -F -n ${{ env.BINARY_NAME }} ${{ env.ENTRANCE_SCRIPT }}
+        run: >
+          ${{ steps.setup-python.outputs.python-path }} -m pyinstaller
+          --distpath ./bin -F -n ${{ env.BINARY_NAME }} ${{ env.ENTRANCE_SCRIPT }}
       - name: Upload Binary
         uses: actions/upload-artifact@v3
         with:
@@ -41,14 +44,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup Python
+        id: setup-python
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        run: pip install pyinstaller
+        run: ${{ steps.setup-python.outputs.python-path }} -m pip install pyinstaller
       - name: Package
         run: >
-          pyinstaller --distpath ./bin -F -n ${{ env.BINARY_NAME }} --target-arch universal2
+          ${{ steps.setup-python.outputs.python-path }} -m pyinstaller
+          --distpath ./bin -F -n ${{ env.BINARY_NAME }} --target-arch universal2
           ${{ env.ENTRANCE_SCRIPT }}
       - name: Upload Binary
         uses: actions/upload-artifact@v3

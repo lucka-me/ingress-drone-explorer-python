@@ -11,12 +11,15 @@ jobs:
     name: Package
     strategy:
       matrix:
-        os: [ windows, ubuntu ]
+        os: [ windows, ubuntu, macos ]
         target-arch: [ x86_64 ]
-        python-version: [ '3.11', 'pypy3.9' ]
+        python-version: [ '3.11', 'pypy-3.9' ]
         include:
           - os: macos
             target-arch: universal2
+        exclude:
+          - os: macos
+            target-arch: x86_64
     runs-on: ${{ matrix.os }}-latest
     steps:
       - name: Checkout

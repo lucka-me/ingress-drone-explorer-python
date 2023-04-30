@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [ 'main' ]
+  pull_request:
+    branches: [ 'main' ]
+
+env:
+  BINARY_NAME: ingress-drone-explorer
+  ENTRANCE_SCRIPT: src/main.py
+
+jobs:
+  package:
+    name: Package
+    strategy:
+      matrix:
+        os: [ windows, ubuntu ]
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Python
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install pyinstaller
+      - name: Package
+        run: pyinstaller --distpath ./bin -F -n ${{ env.BINARY_NAME }} ${{ env.ENTRANCE_SCRIPT }}
+      - name: Upload Binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.BINARY_NAME }}-${{ runner.os }}-x86_64
+          path: bin/${{ env.BINARY_NAME }}*
+
+  package-macos:
+    name: Package for macOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Python
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install pyinstaller
+      - name: Package
+        run: >
+          pyinstaller --distpath ./bin -F -n ${{ env.BINARY_NAME }} --target-arch universal2
+          ${{ env.ENTRANCE_SCRIPT }}
+      - name: Upload Binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.BINARY_NAME }}-${{ runner.os }}-universal
+          path: bin/${{ env.BINARY_NAME }}*

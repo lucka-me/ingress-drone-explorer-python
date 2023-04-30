@@ -7,11 +7,13 @@ An offline CLI tool to analyze reachable Portals for Ingress Drone Mark I.
 
 Implementations in different languages are listed and compared in [Benchmark](#benchmark).
 
+The CI workflow builds universal binary for macOS and x86_64 binaries for Windows & Linux, the files are available as artifacts.
+
 ## Build from Source
 
 ### Requirements
 
-- Python 3.9 (Backporting should be possible)
+- Python 3.9+ (Backporting should be possible)
 
 ## Exploration Guide
 

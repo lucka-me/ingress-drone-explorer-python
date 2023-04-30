@@ -12,9 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [ windows, ubuntu ]
-        python-version: [ '3.11', 'pypy-3.9' ]
     runs-on: ${{ matrix.os }}-latest
-    continue-on-error: ${{ matrix.python-version == 'pypy-3.9' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -22,26 +20,20 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.11'
       - name: Install dependencies
-        run: ${{ steps.setup-python.outputs.python-path }} -m pip install PyInstaller
+        run: pip install pyinstaller
       - name: Package
-        run: >
-          ${{ steps.setup-python.outputs.python-path }} -m PyInstaller
-          --distpath ./bin -F -n ${{ env.BINARY_NAME }} ${{ env.ENTRANCE_SCRIPT }}
+        run: pyinstaller --distpath ./bin -F -n ${{ env.BINARY_NAME }} ${{ env.ENTRANCE_SCRIPT }}
       - name: Upload Binary
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.BINARY_NAME }}-${{ runner.os }}-${{ matrix.python-version }}-x86_64
+          name: ${{ env.BINARY_NAME }}-${{ runner.os }}-x86_64
           path: bin/${{ env.BINARY_NAME }}*
 
   package-macos:
     name: Package for macOS
-    strategy:
-      matrix:
-        python-version: [ '3.11', 'pypy-3.9' ]
     runs-on: macos-latest
-    continue-on-error: ${{ matrix.python-version == 'pypy-3.9' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -49,16 +41,15 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.11'
       - name: Install dependencies
-        run: ${{ steps.setup-python.outputs.python-path }} -m pip install PyInstaller
+        run: pip install pyinstaller
       - name: Package
         run: >
-          ${{ steps.setup-python.outputs.python-path }} -m PyInstaller
-          --distpath ./bin -F -n ${{ env.BINARY_NAME }} --target-arch universal2
+          pyinstaller --distpath ./bin -F -n ${{ env.BINARY_NAME }} --target-arch universal2
           ${{ env.ENTRANCE_SCRIPT }}
       - name: Upload Binary
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.BINARY_NAME }}-${{ runner.os }}-${{ matrix.python-version }}-universal
+          name: ${{ env.BINARY_NAME }}-${{ runner.os }}-universal
           path: bin/${{ env.BINARY_NAME }}*
